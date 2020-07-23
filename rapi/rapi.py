@@ -2,6 +2,7 @@
 
 import cv2
 import numpy as np
+import comu
 
 cap = cv2.VideoCapture(0)
 ret, frame = cap.read()
@@ -9,10 +10,18 @@ ret, frame = cap.read()
 cap.set(3, 640)
 cap.set(4, 480)
 
+# Order number
+ORD_STRAIGHT     = 0
+ORD_TURNLEFT     = 1
+ORD_TURNRIGHT    = 2
+ORD_TURNLEFT_90  = 3
+ORD_TURNRIGHT_90 = 4
+
 # Variable for lineTracing
 vertical  = False
 horiznal  = False
 #numOfLine = 0
+direction = False # False == Left
 
 # LineTracing
 def LineTracing(src):
@@ -20,7 +29,7 @@ def LineTracing(src):
     degree = np.array([])
     line   = np.array([])
     # Convert BGR to Gray for reduce time
-    gray = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
+    cv2.cvtColor(src,src, cv2.COLOR_BGR2GRAY)
 
     # Detect line using hough transformation
     canny = cv2.Canny(src, 50, 200)
@@ -32,41 +41,27 @@ def LineTracing(src):
         degree = 1.57 - degree
     if np.any( np.abs(degree) > 1.27 ) :
         vertical = True
-        print('Straight!')
+        comu.TX_data(serial_port, ORD_STRAIGHT)
 
     elif np.any( degree < 0) :
         vertical = False
-        print('Turn left!')
+        comu.TX_data(serial_port, ORD_TURNLEFT)
 
     else :
         vertical = False
-        print('Turn right!')
+        comu.TX_data(serial_port, ORD_TURNRIGHT)
     
     if vertical == True | ( np.any( np.abs(degree) )  < 0.3 ):
         horiznal = True
-        print("Cross!!")
-
-    print(line)
-    return degree 
+        if directoin :
+            comu.TX_data(serial_port, ORD_TURNLEFT_90)
+        else :
+            comu.TX_data(serial_port, ORD_TURNRIGHT_90)
 
 # main
-while(True):
-    ret, frame = cap.read()
-   
-    cv2.imshow("Debug", frame)
-    a = cv2.waitKey(1)
-    if a == ord('q'):
-        break
+if __name__ == "__main__":
 
-    elif a == ord('w'):
-        cv2.imwrite('./test.png', frame)
-        print('done')
-
-    elif a == ord('x'):
-        a = LineTracing(frame)
-        print(a)
-
-
-cv2.destroyAllWIndow()
-
-
+    while(True):
+        ret, frame = cap.read()
+        LineTracing(frame)
+        comu.TX_data(serial_port, ORD_STRAIGHT)
