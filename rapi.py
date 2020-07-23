@@ -1,48 +1,72 @@
+# This code is test code
+
 import cv2
 import numpy as np
-import tesseract as tsr
 
-# Setup and Get Video
-# Get video
 cap = cv2.VideoCapture(0)
-if !cv2.isOpen():
-    print("Can not open Camera!")
+ret, frame = cap.read()
 
-# Original image size is (480, 640)
-# We use shrink image
-cap.set(3, 320)
-cap.set(4, 240)
+cap.set(3, 640)
+cap.set(4, 480)
 
-# Loop
+# Variable for lineTracing
+vertical  = False
+horiznal  = False
+#numOfLine = 0
+
+# LineTracing
+def LineTracing(src):
+
+    degree = np.array([])
+    line   = np.array([])
+    # Convert BGR to Gray for reduce time
+    gray = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
+
+    # Detect line using hough transformation
+    canny = cv2.Canny(src, 50, 200)
+    line  = cv2.HoughLines(canny, 1, np.pi/180, 100)
+
+    # Find vertical line
+    if line.shape[0] > 0 :
+        degree = np.squeeze(line[:,:,1], axis = 1)
+        degree = 1.57 - degree
+    if np.any( np.abs(degree) > 1.27 ) :
+        vertical = True
+        print('Straight!')
+
+    elif np.any( degree < 0) :
+        vertical = False
+        print('Turn left!')
+
+    else :
+        vertical = False
+        print('Turn right!')
+    
+    if vertical == True | ( np.any( np.abs(degree) )  < 0.3 ):
+        horiznal = True
+        print("Cross!!")
+
+    print(line)
+    return degree 
+
+# main
 while(True):
     ret, frame = cap.read()
+   
+    cv2.imshow("Debug", frame)
+    a = cv2.waitKey(1)
+    if a == ord('q'):
+        break
 
-    # We will use gray scale image
-    gry = cv2.cvtColor(srk, cv2.COLOR_BGR2GRAY)
-    
-# Check direction for line tracing
-def Direction(src):
-    
-    # Cut front image
-    cut = scr[160:240] # cut.shape == [80, 320, 3]
+    elif a == ord('w'):
+        cv2.imwrite('./test.png', frame)
+        print('done')
 
-    # Detect yellow line
-    hsv = cv2.cvtColor(cut, cv2.COLOR_BGR2HSV)
-    h, s, v = cv2.split(hsv)
-    h = cv2.inRange(h, 20, 35) # if detect yellow, then h's element is 255
-    h = h/255
+    elif a == ord('x'):
+        a = LineTracing(frame)
+        print(a)
 
-    # Make left/right mask
-    # Change range!!
-    mask = np.zeros[320]
-    mask[  0:100] = 1
-    mask[220:320] = 1
-    temp = np.dot(h, mask)
-    left  = sum(temp[  0:100])
-    right = sum(temp[220:320])
 
-    if left[0] > 20 :
-        # Send message
+cv2.destroyAllWIndow()
 
-    elif right[0] > 20 :
-        # Send nessage
+
