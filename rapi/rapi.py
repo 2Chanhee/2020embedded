@@ -4,12 +4,6 @@ import cv2
 import numpy as np
 import comu
 
-cap = cv2.VideoCapture(0)
-ret, frame = cap.read()
-
-cap.set(3, 640)
-cap.set(4, 480)
-
 # Order number
 ORD_STRAIGHT     = 0
 ORD_TURNLEFT     = 1
@@ -29,7 +23,7 @@ def LineTracing(src):
     degree = np.array([])
     line   = np.array([])
     # Convert BGR to Gray for reduce time
-    cv2.cvtColor(src,src, cv2.COLOR_BGR2GRAY)
+    src = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
 
     # Detect line using hough transformation
     canny = cv2.Canny(src, 50, 200)
@@ -41,27 +35,44 @@ def LineTracing(src):
         degree = 1.57 - degree
     if np.any( np.abs(degree) > 1.27 ) :
         vertical = True
-        comu.TX_data(serial_port, ORD_STRAIGHT)
+        comu.TX_data(comu.serial_port, ORD_STRAIGHT)
 
     elif np.any( degree < 0) :
         vertical = False
-        comu.TX_data(serial_port, ORD_TURNLEFT)
+        comu.TX_data(comu.serial_port, ORD_TURNLEFT)
 
     else :
         vertical = False
-        comu.TX_data(serial_port, ORD_TURNRIGHT)
+        comu.TX_data(comu.serial_port, ORD_TURNRIGHT)
     
     if vertical == True | ( np.any( np.abs(degree) )  < 0.3 ):
         horiznal = True
         if directoin :
-            comu.TX_data(serial_port, ORD_TURNLEFT_90)
+            comu.TX_data(comu.serial_port, ORD_TURNLEFT_90)
         else :
-            comu.TX_data(serial_port, ORD_TURNRIGHT_90)
+            comu.TX_data(comu.serial_port, ORD_TURNRIGHT_90)
 
 # main
-if __name__ == "__main__":
+#if __name__ == "__main__":
 
-    while(True):
-        ret, frame = cap.read()
+cap = cv2.VideoCapture(0)
+
+cap.set(3, 640)
+cap.set(4, 480)
+
+ret, frame = cap.read()
+
+if ret :
+    print("cam is open")
+else :
+    print("cam is not open")
+
+
+while(True):
+    ret, frame = cap.read()
+    if ret :
         LineTracing(frame)
-        comu.TX_data(serial_port, ORD_STRAIGHT)
+        comu.TX_data(comu.serial_port, ORD_STRAIGHT)
+    else :
+        print("No camera!")
+        break
