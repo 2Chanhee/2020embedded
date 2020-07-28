@@ -6,12 +6,17 @@ import numpy as np
 cap = cv2.VideoCapture(0)
 ret, frame = cap.read()
 
-cap.set(3, 640)
-cap.set(4, 480)
+if ret == False :
+    print('Camera is not open!')
+    exit()
 
+#cap.set(3, 1280)
+#cap.set(4, 960)
+
+print(frame)
 while(True):
     ret, frame = cap.read()
-   
+    
     cv2.imshow("Debug", frame)
     a = cv2.waitKey(1)
     if a == ord('q'):
@@ -22,7 +27,7 @@ while(True):
         print('done')
 
     elif a == ord('x'):
-        a = LineTracing(frame)
+        # a = LineTracing(frame)
         print(a)
 
 

@@ -4,14 +4,19 @@ import cv2
 import numpy as np
 
 cap = cv2.VideoCapture(0)
-ret, frame = cap.read()
+#ret, frame = cap.read()
 
-cap.set(3, 640)
-cap.set(4, 480)
+#if ret == False :
+#    print('Camera is not open!')
+#    exit()
 
+cap.set(3, 2560)
+cap.set(4, 1920)
+
+#print(frame.shape)
 while(True):
     ret, frame = cap.read()
-   
+    frame = cv2.resize(frame, dsize = (320, 240), interpolation = cv2.INTER_NEAREST)    
     cv2.imshow("Debug", frame)
     a = cv2.waitKey(1)
     if a == ord('q'):
@@ -22,7 +27,7 @@ while(True):
         print('done')
 
     elif a == ord('x'):
-        a = LineTracing(frame)
+        # a = LineTracing(frame)
         print(a)
 
 

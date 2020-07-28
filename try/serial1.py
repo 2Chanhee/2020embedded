@@ -1,4 +1,4 @@
-mport serial
+import serial
 import time
 
 # Setup variable
@@ -7,6 +7,13 @@ serial_port    = None
 Read_Rx        = 0
 receiving_exit = 1
 threding_Time  = 0.01
+
+# Setup for Communication
+BPS = 4800
+    
+serial_port = serial.Serial('/dev/ttyS0', BPS, timeout = 0.01)
+serial_port.flush() # Clear buffer
+
 
 # Send data by one byte
 def TX_data(ser, one_byte):
@@ -27,11 +34,6 @@ def RX_data(ser):
 # Main Function
 # This code is not excute when imported other code
 if __name__ == '__main__':
-    BPS = 4800
-    
-    serial_port = serial.Serial('/dev/ttyS0', BPS, timeout = 0.01)
-    serial_port.flush() # Clear buffer
-
     TX_data(serial_port, 128)
 
     time.sleep(1)

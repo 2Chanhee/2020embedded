@@ -5,11 +5,11 @@ import numpy as np
 import comu
 
 # Order number
-ORD_STRAIGHT     = 0
+ORD_STRAIGHT     = 2 
 ORD_TURNLEFT     = 1
-ORD_TURNRIGHT    = 2
-ORD_TURNLEFT_90  = 3
-ORD_TURNRIGHT_90 = 4
+ORD_TURNRIGHT    = 3
+ORD_TURNLEFT_90  = 4
+ORD_TURNRIGHT_90 = 6
 
 # Variable for lineTracing
 vertical  = False
@@ -21,19 +21,25 @@ direction = False # False == Left
 def LineTracing(src):
 
     degree = np.array([])
-    line   = np.array([])
+    # line   = np.array([])
     # Convert BGR to Gray for reduce time
-    src = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
+    # src = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
+    hsv = cv2.cvtColor(src, cv2.COLOR_BGR2HSV)
+
 
     # Detect line using hough transformation
+    src = cv2.equalizeHist(src)
     canny = cv2.Canny(src, 50, 200)
-    line  = cv2.HoughLines(canny, 1, np.pi/180, 100)
+    line  = cv2.HoughLines(canny, 1, np.pi/180, 50)
 
     # Find vertical line
-    if line.shape[0] > 0 :
-        degree = np.squeeze(line[:,:,1], axis = 1)
-        degree = 1.57 - degree
-    if np.any( np.abs(degree) > 1.27 ) :
+    if np.any(line == None) :
+        return
+    degree = np.squeeze(line[:,:,1], axis = 1)
+    degree = 1.57 - degree
+
+    # Detect straight line
+    if np.any( np.abs(degree) > 1.25 ) :
         vertical = True
         comu.TX_data(comu.serial_port, ORD_STRAIGHT)
 
@@ -45,9 +51,9 @@ def LineTracing(src):
         vertical = False
         comu.TX_data(comu.serial_port, ORD_TURNRIGHT)
     
-    if vertical == True | ( np.any( np.abs(degree) )  < 0.3 ):
+    if vertical == True & ( np.any( np.abs(degree) < 0.3 ) ):
         horiznal = True
-        if directoin :
+        if direction :
             comu.TX_data(comu.serial_port, ORD_TURNLEFT_90)
         else :
             comu.TX_data(comu.serial_port, ORD_TURNRIGHT_90)
@@ -70,9 +76,14 @@ else :
 
 while(True):
     ret, frame = cap.read()
+    cv2.imshow('test', frame)
+    a = cv2.waitKey(1)
     if ret :
         LineTracing(frame)
-        comu.TX_data(comu.serial_port, ORD_STRAIGHT)
+        #comu.TX_data(comu.serial_port, ORD_STRAIGHT)
     else :
         print("No camera!")
+        break
+
+    if a == ord('q'):
         break
