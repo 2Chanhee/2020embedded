@@ -17,13 +17,15 @@ horiznal  = False
 #numOfLine = 0
 direction = False # False == Left
 
-# LineTracing
+# LineTracing function
 def LineTracing(src):
     # src = cv2.equalizeHist(src)
     degree = np.array([])
     # line   = np.array([])
     # Convert BGR to Gray for reduce time
     # src = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
+
+    # Find yellow line
     hsv = cv2.cvtColor(src, cv2.COLOR_BGR2HSV)
     h, s, v = cv2.split(hsv)
     s = cv2.inRange(s, 40, 255)
@@ -33,9 +35,8 @@ def LineTracing(src):
 
 
     # Detect line using hough transformation
-    
     canny = cv2.Canny(src, 50, 200)
-    line  = cv2.HoughLines(canny, 1, np.pi/180, 50)
+    line  = cv2.HoughLines(canny, 1, np.pi/180, 100)
 
     # Find vertical line
     if np.any(line == None) :
@@ -44,7 +45,7 @@ def LineTracing(src):
     degree = 1.57 - degree
 
     # Detect straight line
-    if np.any( np.abs(degree) > 1.25 ) :
+    if np.any( np.abs(degree) > 1.42 ) :
         vertical = True
         comu.TX_data(comu.serial_port, ORD_STRAIGHT)
         print("STR")
@@ -73,8 +74,8 @@ def LineTracing(src):
 
 cap = cv2.VideoCapture(0)
 
-cap.set(3, 1280)
-cap.set(4, 960)
+cap.set(3, 640)
+cap.set(4, 480)
 
 ret, frame = cap.read()
 
