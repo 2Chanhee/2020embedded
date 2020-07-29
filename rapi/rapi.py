@@ -52,12 +52,12 @@ def LineTracing(src):
 
     elif np.any( degree < 0) :
         vertical = False
-        comu.TX_data(comu.serial_port, ORD_TURNLEFT)
+        comu.TX_data(comu.serial_port, ORD_TURNLEFT_90)
         print("LFT")
 
     else :
         vertical = False
-        comu.TX_data(comu.serial_port, ORD_TURNRIGHT)
+        comu.TX_data(comu.serial_port, ORD_TURNRIGHT_90)
         print("RGT")
     
     if vertical == True & ( np.any( np.abs(degree) < 0.3 ) ):
