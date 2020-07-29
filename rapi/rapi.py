@@ -45,7 +45,7 @@ def LineTracing(src):
     degree = 1.57 - degree
 
     # Detect straight line
-    if np.any( np.abs(degree) > 1.30 ) :
+    if np.any( np.abs(degree) > 1.20 ) :
         vertical = True
         comu.TX_data(comu.serial_port, ORD_STRAIGHT)
         print("STR")
@@ -69,6 +69,8 @@ def LineTracing(src):
             comu.TX_data(comu.serial_port, ORD_TURNRIGHT_90)
         horiznal = False
 
+    return src
+
 # main
 #if __name__ == "__main__":
 
@@ -88,10 +90,10 @@ else :
 while(True):
     ret, frame = cap.read()
     frame = cv2.resize(frame, dsize = (640, 480), interpolation = cv2.INTER_NEAREST)
-    cv2.imshow('test', frame)
+    cv2.imshow('test', a)
     a = cv2.waitKey(1)
     if ret :
-        LineTracing(frame)
+        a = LineTracing(frame)
         #comu.TX_data(comu.serial_port, ORD_STRAIGHT)
     else :
         print("No camera!")
