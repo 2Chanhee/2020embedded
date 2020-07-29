@@ -5,11 +5,11 @@ import numpy as np
 import comu
 
 # Order number
-ORD_STRAIGHT     = 2 
-ORD_TURNLEFT     = 1
-ORD_TURNRIGHT    = 3
-ORD_TURNLEFT_90  = 4
-ORD_TURNRIGHT_90 = 6
+ORD_STRAIGHT     = 24 
+ORD_TURNLEFT     = 20
+ORD_TURNRIGHT    = 21
+ORD_TURNLEFT_90  = 22
+ORD_TURNRIGHT_90 = 23
 
 # Variable for lineTracing
 vertical  = False
@@ -74,8 +74,8 @@ def LineTracing(src):
 
 cap = cv2.VideoCapture(0)
 
-cap.set(3, 640)
-cap.set(4, 480)
+cap.set(3, 1280)
+cap.set(4, 960)
 
 ret, frame = cap.read()
 
