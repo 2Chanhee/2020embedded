@@ -29,7 +29,7 @@ def LineTracing(src):
     # Find yellow line
     hsv = cv2.cvtColor(src, cv2.COLOR_BGR2HSV)
     h, s, v = cv2.split(hsv)
-    s = cv2.inRange(s, 40, 255)
+    s = cv2.inRange(s, 120, 255)
     hsv = cv2.bitwise_and(hsv, hsv, mask = s)
     src = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
     src = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
@@ -37,7 +37,7 @@ def LineTracing(src):
 
     # Detect line using hough transformation
     canny = cv2.Canny(src, 50, 200)
-    line  = cv2.HoughLines(canny, 1, np.pi/180, 130)
+    line  = cv2.HoughLines(canny, 1, np.pi/180, 100)
 
     # Find vertical line
     if np.any(line == None) :
@@ -45,8 +45,18 @@ def LineTracing(src):
     degree = np.squeeze(line[:,:,1], axis = 1)
     degree = 1.57 - degree
 
-    # Detect straight line
-    if np.any( np.abs(degree) > 1.47 ) :
+    if  np.any( np.abs(degree) > 1.4 ) & ( np.any( np.abs(degree) < 0.1) ):
+        horiznal = True
+        print("CRS")
+        if direction :
+            comu.TX_data(comu.serial_port, ORD_TURNLEFT_90)
+        else :
+            comu.TX_data(comu.serial_port, ORD_TURNRIGHT_90)
+        horiznal = False
+        return
+
+    # Detect straight linei
+    if np.any( np.abs(degree) > 1.4 ) :
         vertical = True
         comu.TX_data(comu.serial_port, ORD_STRAIGHT)
         print("STR")
@@ -61,14 +71,6 @@ def LineTracing(src):
         comu.TX_data(comu.serial_port, ORD_TURNRIGHT_90)
         print("RGT")
 
-    if (vertical == True) & ( np.any( np.abs(degree) < 0.1) ):
-        horiznal = True
-        print("CRS")
-        if direction :
-            comu.TX_data(comu.serial_port, ORD_TURNLEFT_90)
-        else :
-            comu.TX_data(comu.serial_port, ORD_TURNRIGHT_90)
-        horiznal = False
 
     return src
 
