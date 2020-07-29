@@ -80,6 +80,7 @@ cap.set(3, 1280)
 cap.set(4, 960)
 
 ret, frame = cap.read()
+src = LineTracing(frame)
 
 if ret :
     print("cam is open")
@@ -90,10 +91,10 @@ else :
 while(True):
     ret, frame = cap.read()
     frame = cv2.resize(frame, dsize = (640, 480), interpolation = cv2.INTER_NEAREST)
-    cv2.imshow('test', a)
+    cv2.imshow('test', src)
     a = cv2.waitKey(1)
     if ret :
-        a = LineTracing(frame)
+        src = LineTracing(frame)
         #comu.TX_data(comu.serial_port, ORD_STRAIGHT)
     else :
         print("No camera!")
