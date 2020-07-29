@@ -36,7 +36,7 @@ def LineTracing(src):
 
     # Detect line using hough transformation
     canny = cv2.Canny(src, 50, 200)
-    line  = cv2.HoughLines(canny, 1, np.pi/180, 100)
+    line  = cv2.HoughLines(canny, 1, np.pi/180, 150)
 
     # Find vertical line
     if np.any(line == None) :
@@ -45,7 +45,7 @@ def LineTracing(src):
     degree = 1.57 - degree
 
     # Detect straight line
-    if np.any( np.abs(degree) > 1.42 ) :
+    if np.any( np.abs(degree) > 1.30 ) :
         vertical = True
         comu.TX_data(comu.serial_port, ORD_STRAIGHT)
         print("STR")
