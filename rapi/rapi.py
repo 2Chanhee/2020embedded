@@ -37,7 +37,7 @@ def LineTracing(src):
 
     # Detect line using hough transformation
     canny = cv2.Canny(src, 50, 200)
-    line  = cv2.HoughLines(canny, 1, np.pi/180, 150)
+    line  = cv2.HoughLines(canny, 1, np.pi/180, 130)
 
     # Find vertical line
     if np.any(line == None) :
@@ -46,7 +46,7 @@ def LineTracing(src):
     degree = 1.57 - degree
 
     # Detect straight line
-    if np.any( np.abs(degree) > 1.20 ) :
+    if np.any( np.abs(degree) > 1.47 ) :
         vertical = True
         comu.TX_data(comu.serial_port, ORD_STRAIGHT)
         print("STR")
@@ -61,7 +61,7 @@ def LineTracing(src):
         comu.TX_data(comu.serial_port, ORD_TURNRIGHT_90)
         print("RGT")
 
-    if vertical == True & ( np.any( np.abs(degree) < 0.15) ):
+    if (vertical == True) & ( np.any( np.abs(degree) < 0.1) ):
         horiznal = True
         print("CRS")
         if direction :
@@ -105,4 +105,4 @@ while(True):
     if a == ord('q'):
         break
 
-    time.sleep(1)
+    #time.sleep(1)
