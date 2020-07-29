@@ -3,6 +3,7 @@
 import cv2
 import numpy as np
 import comu
+import time
 
 # Order number
 ORD_STRAIGHT     = 24 
@@ -59,8 +60,8 @@ def LineTracing(src):
         vertical = False
         comu.TX_data(comu.serial_port, ORD_TURNRIGHT_90)
         print("RGT")
-    
-    if vertical == True & ( np.any( np.abs(degree) < 0.3 ) ):
+
+    if vertical == True & ( np.any( np.abs(degree) < 0.15) ):
         horiznal = True
         print("CRS")
         if direction :
@@ -91,10 +92,11 @@ else :
 while(True):
     ret, frame = cap.read()
     frame = cv2.resize(frame, dsize = (640, 480), interpolation = cv2.INTER_NEAREST)
-    cv2.imshow('test', src)
+    # src = LineTracing(frame)
+    cv2.imshow('test', frame)
     a = cv2.waitKey(1)
     if ret :
-        src = LineTracing(frame)
+        LineTracing(frame)
         #comu.TX_data(comu.serial_port, ORD_STRAIGHT)
     else :
         print("No camera!")
@@ -102,3 +104,5 @@ while(True):
 
     if a == ord('q'):
         break
+
+    time.sleep(1)
