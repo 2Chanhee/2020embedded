@@ -20,7 +20,7 @@ horiznal  = False
 direction = False # False == Left
 
 # isMision is toggle when robot meet cross line
-isMision = False
+isMission = True
 crossCount = 0
 
 # LineTracing function
@@ -58,12 +58,12 @@ def LineTracing(src):
         else :
             comu.TX_data(comu.serial_port, ORD_TURNRIGHT_90)
         horiznal = False
-        crossCount += 1
+        #global crossCount += 1
         # Toggle isMision
-        if crossCount > 5
-            isMision = not isMision
-            crossCount = 0
-        return
+        #if crossCount > 5:
+            #isMision = not isMision
+            #crossCount = 0
+            #return
 
     # Detect straight linei
     if np.any( np.abs(degree) > 1.4 ) :
@@ -108,8 +108,8 @@ while(True):
     if isMission:
         LineTracing(frame)
         #comu.TX_data(comu.serial_port, ORD_STRAIGHT)
-    else :
-        Mision()
+    #else :
+        #Mision()
         
     if a == ord('q'):
         break
