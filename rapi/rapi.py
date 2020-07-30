@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 import comu
 import time
+import mission
 
 # Order number
 ORD_STRAIGHT     = 24 
@@ -17,6 +18,10 @@ vertical  = False
 horiznal  = False
 #numOfLine = 0
 direction = False # False == Left
+
+# isMision is toggle when robot meet cross line
+isMision = False
+crossCount = 0
 
 # LineTracing function
 def LineTracing(src):
@@ -53,6 +58,11 @@ def LineTracing(src):
         else :
             comu.TX_data(comu.serial_port, ORD_TURNRIGHT_90)
         horiznal = False
+        crossCount += 1
+        # Toggle isMision
+        if crossCount > 5
+            isMision = not isMision
+            crossCount = 0
         return
 
     # Detect straight linei
@@ -63,14 +73,13 @@ def LineTracing(src):
 
     elif np.any( degree < 0) :
         vertical = False
-        comu.TX_data(comu.serial_port, ORD_TURNLEFT_90)
+        comu.TX_data(comu.serial_port, ORD_TURNLEFT)
         print("LFT")
 
     else :
         vertical = False
-        comu.TX_data(comu.serial_port, ORD_TURNRIGHT_90)
+        comu.TX_data(comu.serial_port, ORD_TURNRIGHT)
         print("RGT")
-
 
     return src
 
@@ -83,7 +92,6 @@ cap.set(3, 1280)
 cap.set(4, 960)
 
 ret, frame = cap.read()
-src = LineTracing(frame)
 
 if ret :
     print("cam is open")
@@ -97,13 +105,12 @@ while(True):
     # src = LineTracing(frame)
     cv2.imshow('test', frame)
     a = cv2.waitKey(1)
-    if ret :
+    if isMission:
         LineTracing(frame)
         #comu.TX_data(comu.serial_port, ORD_STRAIGHT)
     else :
-        print("No camera!")
-        break
-
+        Mision()
+        
     if a == ord('q'):
         break
 

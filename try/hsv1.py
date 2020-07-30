@@ -7,7 +7,7 @@ def findLine(src):
     #src = cv2.equalizeHist(src)
     hsv = cv2.cvtColor(src, cv2.COLOR_BGR2HSV)
     h, s, v = cv2.split(hsv)
-    s = cv2.inRange(s, 70, 255)
+    s = cv2.inRange(s, 120, 255)
     hsv = cv2.bitwise_and(hsv, hsv, mask = s)
     src = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
     return src
