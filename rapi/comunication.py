@@ -1,6 +1,13 @@
 import serial
 import time
 
+# Action Order
+ORD_STRAIGHT     = 24 
+ORD_TURNLEFT     = 20
+ORD_TURNRIGHT    = 21
+ORD_TURNLEFT_90  = 22
+ORD_TURNRIGHT_90 = 23
+
 # Setup variable
 serial_use     = 1
 serial_port    = None
@@ -41,5 +48,3 @@ if __name__ == '__main__':
     print("Return DATA : " + str(RX_data(serial_port)))
     
     exit(1)
-
-

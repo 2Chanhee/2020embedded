@@ -2,10 +2,6 @@ import cv2
 import numpy as np
 import comunication as comu
 
-ORD_TURNLEFT  = 20
-ORD_TURNRIGHT = 21
-ORD_STRAIGHT  = 24
-
 # Suppose red is dangerous area
 # Return Centroid of area
 def GetCentroid(src):
@@ -36,12 +32,10 @@ def GoToArea(src):
     cx, cy = GetCentroid(src)
     if cx < 130:
         while(cx > 130):
-            comu.TX_data(comu.serial_port, ORD_TURNRIGHT)
+            comu.TX_data(comu.serial_port, comu.ORD_TURNRIGHT)
     elif cx > 230:
         while(cx < 230):
-            comu.TX_data(comu.serial_port, ORD_TURNLEFT)
+            comu.TX_data(comu.serial_port, comu.ORD_TURNLEFT)
     else:
         for i in range(10):
-            comu.TX_data(comu.serial_port, ORD_STRAIGHT)
-
-        
+            comu.TX_data(comu.serial_port, comu.ORD_STRAIGHT)        
